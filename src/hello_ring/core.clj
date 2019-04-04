@@ -1,5 +1,5 @@
 (ns hello-ring.core)
-(use 'ring.adapter.jetty)
+(require '[ring.adapter.jetty :as jetty])
 
 (defn handler [request]
   {:status 200
@@ -16,8 +16,20 @@
       (catch Exception Exception
         default))))
 
+(def server nil)
+
+(defn start-server
+  ([port]
+   (alter-var-root
+    #'server
+    (fn [server]
+      (when server (.stop server))
+      (jetty/run-jetty handler {:port port :join? false})))
+   (println (format "Listening for connections on port %d." port)))
+  ([]
+   (start-server 8080)))
+
 (defn -main
   [& args]
   (let [port (get-port (first args))]
-    (println (format "Listening for connections on port %d." port))
-    (run-jetty handler {:port port})))
+    (start-server port)))
