@@ -8,9 +8,13 @@
 
 (defn get-port
   [port]
-  (cond (instance? String port) (Integer/parseInt port)
-        (instance? Long port) port
-        :else 8080))
+  (let [default 8080]
+    (try
+      (cond (instance? String port) (Integer/parseInt port)
+            (instance? Long port) port
+            :else default)
+      (catch Exception Exception
+        default))))
 
 (defn -main
   [& args]
