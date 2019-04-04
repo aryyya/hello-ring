@@ -16,7 +16,7 @@
       (catch Exception Exception
         default))))
 
-(def server nil)
+(defonce server nil)
 
 (defn start-server
   ([port]
